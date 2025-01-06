@@ -1,0 +1,23 @@
+Elementary School Counselors	ELMGUI
+Elementary Teachers	ELMTCH
+Guidance Counselors	TOTGUI
+Instructional Coordinators and Supervisors to the Staff	CORSUP
+Kindergarten Teachers	KGTCH
+LEA Administrative Support Staff	LEASUP
+LEA Administrators	LEAADM
+LEA Staff	
+Librarians/media specialists	LIBSPE
+Library/Media Support Staff	LIBSUP
+No Category Codes
+Other Staff
+Paraprofessionals/Instructional Aides	PARA
+Pre-kindergarten Teachers	PKTCH
+School Administrative Support Staff	SCHSUP
+School Counselors	GUI
+School Staff	STAFF
+School administrators	SCHADM
+Secondary School Counselors	SECGUI
+Secondary Teachers	SECTCH
+Student Support Services Staff	STUSUP
+Teachers	TOTTCH
+Ungraded Teachers	UGTCH
