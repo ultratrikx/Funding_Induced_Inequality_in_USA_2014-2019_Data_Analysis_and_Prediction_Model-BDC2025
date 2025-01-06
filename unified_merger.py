@@ -84,25 +84,18 @@ class DistrictDataMerger:
         directory_df = self.read_data_file(directory_file)
 
         if all([ell_df is not None, disabilities_df is not None, directory_df is not None]):
-            # Extract SCHOOL_YEAR and ST from any of the dataframes that has them
-            school_year = None
-            state = None
+            # Extract year from folder name and add as SCHOOL_YEAR
+            year = year_folder.replace('-', '20') # Convert 15-16 to 201516
             
-            # Try to get SCHOOL_YEAR and ST from each dataframe
-            for df in [directory_df, ell_df, disabilities_df]:
-                if 'SCHOOL_YEAR' in df.columns and school_year is None:
-                    school_year = df['SCHOOL_YEAR'].iloc[0]
-                if 'ST' in df.columns and state is None:
-                    state = df['ST'].iloc[0]
-
+            # Get state from directory file's STABR column if it exists
+            state = directory_df['STABR'].iloc[0] if 'STABR' in directory_df.columns else None
+            
             merged_df = pd.merge(ell_df, disabilities_df, on='LEAID', how='outer')
             final_df = pd.merge(merged_df, directory_df, on='LEAID', how='outer')
             
-            # Ensure SCHOOL_YEAR and ST columns exist
-            if 'SCHOOL_YEAR' not in final_df.columns and school_year is not None:
-                final_df['SCHOOL_YEAR'] = school_year
-            if 'ST' not in final_df.columns and state is not None:
-                final_df['ST'] = state
+            # Add the required columns
+            final_df['SCHOOL_YEAR'] = year
+            final_df['ST'] = state if state else directory_df['ST'].iloc[0] if 'ST' in directory_df.columns else None
 
             final_df = final_df.loc[:,~final_df.columns.duplicated()]
             return final_df
@@ -200,7 +193,7 @@ class DistrictDataMerger:
                           'Z32', 'Z33', 'Z35', 'Z36', 'Z37', 'Z38', 'V11', 'V13', 'V15', 'V17', 'V21', 'V23',
                           'V37', 'V29', 'Z34', 'V10', 'V12', 'V14', 'V16', 'V18', 'V22', 'V24', 'V38', 'V30',
                           'V32', 'V93', '_19H', '_21F', '_31F', '_41F', '_61V', '_66V', 'W01', 'W31', 'W61',
-                          'V95', 'V02', 'K14', 'CE1', 'CE2', 'WEIGHT', 'FL_V33', 'FL_MEMBERSCH',
+                          'V95', 'V02', 'K14', 'WEIGHT', 'FL_V33', 'FL_MEMBERSCH',
                           'FL_C14', 'FL_C15', 'FL_C16', 'FL_C17', 'FL_C19', 'FL_B11', 'FL_C20', 'FL_C25',
                           'FL_C36', 'FL_B10', 'FL_B12', 'FL_B13', 'FL_C01', 'FL_C04', 'FL_C05', 'FL_C06',
                           'FL_C07', 'FL_C08', 'FL_C09', 'FL_C10', 'FL_C11', 'FL_C12', 'FL_C13', 'FL_C35',
@@ -214,8 +207,7 @@ class DistrictDataMerger:
                           'FL_V11', 'FL_V13', 'FL_V15', 'FL_V17', 'FL_V21', 'FL_V23', 'FL_V37', 'FL_V29',
                           'FL_Z34', 'FL_V10', 'FL_V12', 'FL_V14', 'FL_V16', 'FL_V18', 'FL_V22', 'FL_V24',
                           'FL_V38', 'FL_V30', 'FL_V32', 'FL_V93', 'FL_19H', 'FL_21F', 'FL_31F', 'FL_41F',
-                          'FL_61V', 'FL_66V', 'FL_W01', 'FL_W31', 'FL_W61', 'FL_V95', 'FL_V02', 'FL_K14',
-                          'FL_CE1', 'FL_CE2']
+                          'FL_61V', 'FL_66V', 'FL_W01', 'FL_W31', 'FL_W61', 'FL_V95', 'FL_V02', 'FL_K14',]
 
         # Filter columns
         final_df = final_df[columns_to_keep]
@@ -230,7 +222,7 @@ class DistrictDataMerger:
 def main():
     # Configuration
     base_path = './data'
-    year_folder = '15-16'  # Can be modified for different years
+    year_folder = '14-15'  # Can be modified for different years
     fiscal_file = f'{base_path}/{year_folder}/fiscal.txt'
 
     # Initialize and run merger
